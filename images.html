@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body ng-app="exam">
+<div ng-controller="con">
+	<div ng-repeat="item in collection">
+		<h2>{{$index+1}} <span ng-bind-html="item.model.head | to_trusted"></span>{{}}</h2>
+		<ol ng-if="item.collection.length>1">
+			<li ng-repeat="chose in item.collection" >
+				<div ng-bind-html="chose.model.text |to_trusted"></div>
+			</li>
+		</ol>
+		<div ng-if="item.collection.length==1">
+			<h2 ng-bind-html="item.collection[0].model.head | to_trusted"></h2>
+			<ol>
+				<li ng-repeat="chose in item.collection[0].collection" >
+					<div ng-bind-html="chose.model.text |to_trusted"></div>
+				</li>
+			</ol>
+		</div>
+
+	</div>
+	
+</div>
+<script src="bower_components/angular/angular.js"></script>
+<script>
+	exam = angular.module('exam',[]);
+	exam.filter('to_trusted', ['$sce', function ($sce) {
+	　　return function (text) {
+	    　　return $sce.trustAsHtml(text);
+	　　};
+	}]);
+	exam.controller('con', function($scope,$http){
+		$http.get('exam2.img.json').then(function(resp) {
+			var data = resp.data;
+			data = JSON.parse(data);
+			console.log(data);
+			$scope.collection = [];
+			for(var i=1; i<data.collection[0].collection.length; i++){
+				$scope.collection = $scope.collection.concat(data.collection[0].collection[i].collection);
+			}
+
+		})
+	})
+</script>
+</body>
+</html>

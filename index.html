@@ -26,7 +26,11 @@
 			data = data.replace('\\\\','\\');
 			data = JSON.parse(data);
 			console.log(data);
-			$scope.collection = data.collection[0].collection[1].collection
+			$scope.collection = [];
+			for(var i=1; i<data.collection[0].collection.length; i++){
+				$scope.collection = $scope.collection.concat(data.collection[0].collection[i].collection);
+			}
+
 		})
 	})
 </script>
